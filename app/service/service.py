@@ -5,6 +5,14 @@ sys.path.append("..")
 from bot import bot
 
 
+def count_participants(chat_id: int) -> int:
+    """
+    Function to count chat participants
+    """
+    participants = await bot.get_chat_member_count(chat_id)
+    return participants - 1
+
+
 async def count_answers(chat_dict: dict, name_common: str) -> list[str]:
     """
     Function to count answers from participants

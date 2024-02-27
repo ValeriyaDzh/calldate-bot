@@ -5,7 +5,6 @@ sys.path.append("..")
 from copy import deepcopy
 
 from aiogram import Router
-from bot import bot
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
@@ -14,6 +13,7 @@ from database.database import chat_users_db, chat_dict_template
 from keyboards.keyboards import create_inline_kb, create_inline_users_kb
 from lexicon.lexicon import MESSAGE, DAYS
 from service.service import (
+    count_participants,
     generate_math,
     send_common_days_message,
     count_answers,
@@ -32,8 +32,7 @@ router = Router()
 async def cmd_start(message: Message):
     if message.chat.id not in chat_users_db:
         chat_users_db[message.chat.id] = deepcopy(chat_dict_template)
-    participants = await bot.get_chat_member_count(message.chat.id)
-    chat_users_db[message.chat.id]["participants"] = participants - 1
+    chat_users_db[message.chat.id]["participants"] = count_participants(message.chat.id)
     await message.answer(
         text=MESSAGE["/start"], reply_markup=create_inline_kb(3, **DAYS)
     )
