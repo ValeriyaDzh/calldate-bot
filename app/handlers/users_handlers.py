@@ -1,7 +1,3 @@
-import sys
-
-sys.path.append("..")
-
 from copy import deepcopy
 
 from aiogram import Router
@@ -9,18 +5,10 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from database.database import chat_users_db, chat_dict_template
-from keyboards.keyboards import create_inline_kb, create_inline_users_kb
-from lexicon.lexicon import MESSAGE, DAYS
-from service.service import (
-    count_participants,
-    generate_math,
-    send_common_days_message,
-    count_answers,
-    send_sorted_results,
-    clean_answers,
-)
-
+from ..database.database import chat_users_db, chat_dict_template
+from ..keyboards.keyboards import create_inline_kb, create_inline_users_kb
+from ..lexicon.lexicon import MESSAGE, DAYS
+from ..service.service import *
 
 router = Router()
 
@@ -32,7 +20,9 @@ router = Router()
 async def cmd_start(message: Message):
     if message.chat.id not in chat_users_db:
         chat_users_db[message.chat.id] = deepcopy(chat_dict_template)
-    chat_users_db[message.chat.id]["participants"] = count_participants(message.chat.id)
+    chat_users_db[message.chat.id]["participants"] = await count_participants(
+        message.chat.id
+    )
     await message.answer(
         text=MESSAGE["/start"], reply_markup=create_inline_kb(3, **DAYS)
     )
@@ -92,7 +82,6 @@ async def process_weekday_or_done_callback(callback_query: CallbackQuery):
                 text=f"Ура! {callback_query.from_user.first_name}, ты выбрал(-а) дни. Ждем остальных",
                 show_alert=True,
             )
-            print(local_chat)
     else:
         await callback_query.answer(
             text=f"Твои дни записаны.\nЖдем ответа от остальных\nпосле сможем продолжить",

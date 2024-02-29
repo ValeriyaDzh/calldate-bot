@@ -1,11 +1,7 @@
-import sys
-
-sys.path.append("..")
-
-from bot import bot
+from ..bot import bot
 
 
-def count_participants(chat_id: int) -> int:
+async def count_participants(chat_id: int) -> int:
     """
     Function to count chat participants
     """
