@@ -2,8 +2,8 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
-from config import BOT_TOKEN
-from handlers import users_handlers
+from .config import BOT_TOKEN
+from .handlers import users_handlers
 
 logger = logging.getLogger(__name__)
 
